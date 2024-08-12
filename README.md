@@ -45,10 +45,13 @@ If message is in this channel, respond to it.
 [x] - return inference time
 [x] - check for NSFW and add a spoiler CENSOR if it is.
 [x] - rate limit 1 image per person per 5 minutes.
+[x] - Deploy it to PROD.
 [] - add logging to server.
-[] - Deploy it to PROD.
+[] find out how to deploy without a password but still encrypt the vault.
+use ssh key????
 
 ### Stretch Goals:
+[] deploy to prod on git push.
 [] - 1/100 chance of something else.
 User gets a message with 🎰 slot machine saying you triggered a random action.
 It could....

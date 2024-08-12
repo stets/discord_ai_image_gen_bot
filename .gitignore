@@ -1,0 +1,5 @@
+venv/
+.env
+.DS_Store
+group_vars/all.yml
+inventory.ini

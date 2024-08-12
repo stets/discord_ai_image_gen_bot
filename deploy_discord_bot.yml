@@ -1,0 +1,102 @@
+---
+- name: Deploy Discord Bot
+  hosts: discord_bot
+  become: yes
+  vars_files:
+    - group_vars/all.yml
+  # bot_dir: /opt/discord_bot
+  # bot_user: discord_bot
+  # bot_group: discord_bot
+
+  pre_tasks:
+    - name: Replace placeholder IP in inventory
+      replace:
+        path: inventory.ini
+        regexp: 'DISCORD_BOT_IP_PLACEHOLDER'
+        replace: "{{ discord_bot_ip }}"
+      delegate_to: localhost
+      become: no
+
+  tasks:
+    - name: Install required packages
+      apt:
+        name:
+          - python3
+          - python3-pip
+          - python3-venv
+        state: present
+        update_cache: yes
+
+    - name: Create bot user
+      user:
+        name: "{{ bot_user }}"
+        system: yes
+        create_home: no
+
+    - name: Create bot directory
+      file:
+        path: "{{ bot_dir }}"
+        state: directory
+        owner: "{{ bot_user }}"
+        group: "{{ bot_group }}"
+        mode: '0755'
+
+    - name: Copy bot files
+      copy:
+        src: "{{ item }}"
+        dest: "{{ bot_dir }}/{{ item }}"
+        owner: "{{ bot_user }}"
+        group: "{{ bot_group }}"
+        mode: '0644'
+      loop:
+        - main.py
+        - requirements.txt
+
+    - name: Set up Python virtual environment
+      pip:
+        requirements: "{{ bot_dir }}/requirements.txt"
+        virtualenv: "{{ bot_dir }}/venv"
+        virtualenv_command: python3 -m venv
+
+    - name: Create environment file
+      copy:
+        content: |
+          DISCORD_TOKEN={{ discord_token }}
+          FAL_API_KEY={{ fal_api_key }}
+        dest: "{{ bot_dir }}/.env"
+        owner: "{{ bot_user }}"
+        group: "{{ bot_group }}"
+        mode: '0600'
+
+    - name: Create systemd service file
+      copy:
+        content: |
+          [Unit]
+          Description=Discord Bot Service
+          After=network.target
+
+          [Service]
+          ExecStart={{ bot_dir }}/venv/bin/python {{ bot_dir }}/main.py
+          WorkingDirectory={{ bot_dir }}
+          User={{ bot_user }}
+          Group={{ bot_group }}
+          Restart=always
+          Environment=PYTHONUNBUFFERED=1
+
+          [Install]
+          WantedBy=multi-user.target
+        dest: /etc/systemd/system/discord_bot.service
+        # TODO: give this a better name later rather than discord_bot.service, too vague...
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Reload systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: Start and enable Discord bot service
+      systemd:
+        name: discord_bot
+        state: started
+        enabled: yes
