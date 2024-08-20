@@ -1,6 +1,7 @@
 # Discord AI Image Generator Bot
 
 This Discord bot generates AI images based on user prompts using FAL.ai's image generation API.
+https://fal.ai/models/fal-ai/fast-lightning-sdxl/api
 
 ## Features
 
@@ -97,6 +98,7 @@ use ssh key????
 User gets a message with 🎰 slot machine saying you triggered a random action.
 It could....
 [] - add a `--style` field.
+[] Since you are adding a lot of more style flags. I would build a function to handle all your flag replacements for ya 🙂
 [] - add a `--format` field.
 [] - chaos etc.
 [] - add optional field for theme. `--niji` = anime style, 

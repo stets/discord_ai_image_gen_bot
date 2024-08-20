@@ -29,7 +29,13 @@ async def on_message(message):
         return
 
     if message.content.startswith('!generate'):
-        prompt = message.content[9:].strip()  # Remove '!generate ' from the message
+        # Remove '!generate ' from the message
+        prompt = message.content[9:].strip()
+
+        # Check for --weeb flag
+        if "--weeb" in prompt:
+            prompt = prompt.replace("--weeb", "anime, manga, cartoon, detailed art").strip()
+
         if not prompt:
             await message.channel.send("Please provide a prompt after !generate")
             return

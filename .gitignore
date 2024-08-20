@@ -3,3 +3,4 @@ venv/
 .DS_Store
 group_vars/all.yml
 inventory.ini
+.vault_pass
