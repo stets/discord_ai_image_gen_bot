@@ -29,6 +29,21 @@ async def on_message(message):
         return
 
     if message.content.startswith('!generate'):
+        # Check for help flag
+        if message.content.strip() == '!generate --help':
+            help_message = (
+                "**Image Generation Bot Help**\n\n"
+                "Usage: `!generate <prompt>`\n\n"
+                "Options:\n"
+                "  `--weeb`: Add anime/manga style to your prompt\n"
+                "  `--help`: Show this help message\n\n"
+                "Examples:\n"
+                "  `!generate a beautiful sunset over the ocean`\n"
+                "  `!generate --weeb a magical girl in a forest`"
+            )
+            await message.channel.send(help_message)
+            return
+
         # Remove '!generate ' from the message
         prompt = message.content[9:].strip()
 
