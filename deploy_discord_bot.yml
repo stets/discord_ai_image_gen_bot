@@ -100,3 +100,8 @@
         name: discord_bot
         state: started
         enabled: yes
+
+    - name: Restart Discord bot service
+      systemd:
+        name: discord_bot
+        state: restarted
